@@ -1,0 +1,20 @@
+#pragma once
+#include <SFML\Graphics.hpp>
+
+class Player
+{
+public:
+	Player();
+	Player(sf::Vector2f pos, float facing);
+
+	sf::Vector2f getPos();
+	float getFacing();
+
+	void setPos(sf::Vector2f pos);
+	void setPos(float x, float y);
+
+private:
+	sf::Vector2f pos;
+
+	float facing;
+};
