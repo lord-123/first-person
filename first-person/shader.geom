@@ -3,6 +3,8 @@
 layout(lines) in;
 layout(triangle_strip, max_vertices=10) out;
 
+out float distanceScalar;
+
 void main() 
 {
 	vec4 pos;
@@ -18,7 +20,8 @@ void main()
 		newX = (atan(pos.x, pos.y)/radians(90))*2;
 		pos.x = newX;
 
-		newY = (1/sqrt(pos.y)/90)*2;
+		distanceScalar = 1/sqrt(pos.y);
+		newY = (distanceScalar/90)*2;
 		pos.y = newY*200;
 
 		gl_Position = pos; 
