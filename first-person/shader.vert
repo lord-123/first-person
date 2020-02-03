@@ -15,7 +15,8 @@ void main()
 	float x = vertex.x * sin(facing) - vertex.y * cos(facing);
 	float y = vertex.x * cos(facing) + vertex.y * sin(facing);
 
-	gl_Position = vertex;
+	vertex.x = x;
+	vertex.y = y;
 
-	gl_FrontColor = gl_Color;
+	gl_Position = vertex;
 }

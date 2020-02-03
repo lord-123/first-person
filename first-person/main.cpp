@@ -1,5 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include "Player.h"
 #include <iostream>
 
 #define _USE_MATH_DEFINES
@@ -14,6 +13,7 @@ Player player;
 
 void loadData();
 void renderingThread(sf::RenderWindow*);
+void handleInput(sf::RenderWindow*);
 
 int main(int argc, char* argv[])
 {
@@ -26,6 +26,9 @@ int main(int argc, char* argv[])
 
 	sf::Thread renderer(&renderingThread, &window);
 	renderer.launch();
+
+	sf::Thread input(&handleInput, &window);
+	input.launch();
 
 	while (window.isOpen())
 	{
@@ -68,6 +71,18 @@ void renderingThread(sf::RenderWindow* window)
 		std::cout << "shader not available!" << std::endl;
 	}
 
+	sf::Font font;
+	if (!font.loadFromFile("cnr.otf"))
+	{
+		std::cout << "failed to load font!" << std::endl;
+	}
+
+	sf::Clock clock;
+	sf::Text fpsText;
+	fpsText.setFont(font);
+	fpsText.setCharacterSize(24);
+	fpsText.setFillColor(sf::Color::White);
+
 	while (window->isOpen())
 	{
 		window->clear(sf::Color::Black);
@@ -76,8 +91,31 @@ void renderingThread(sf::RenderWindow* window)
 		shader.setUniform("playerFacing", player.getFacing());
 		window->draw(vertices, &shader);
 
-
+		fpsText.setString(std::to_string(1 / clock.restart().asSeconds()));
+		window->draw(fpsText);
 
 		window->display();
+	}
+}
+
+void handleInput(sf::RenderWindow* window)
+{
+	sf::Clock clock;
+	int lastMouseX = sf::Mouse::getPosition().x;
+
+	while (window->isOpen())
+	{
+		sf::Time dTime = clock.getElapsedTime();
+		float scalar = dTime.asMicroseconds() * 0.0000000001;
+
+		float cosine = cos(player.getFacing());
+		float sine = sin(player.getFacing());
+
+		sf::Vector2f pos = player.getPos();
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			player.setPos(pos.x + scalar*cosine, pos.y+scalar*sine);
+		}
 	}
 }
