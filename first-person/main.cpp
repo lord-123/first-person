@@ -4,6 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Player.h"
+#include "FPS.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -77,21 +78,24 @@ void renderingThread(sf::RenderWindow* window)
 		std::cout << "failed to load font!" << std::endl;
 	}
 
-	sf::Clock clock;
 	sf::Text fpsText;
 	fpsText.setFont(font);
 	fpsText.setCharacterSize(24);
 	fpsText.setFillColor(sf::Color::White);
 
+	FPS fps;
+
 	while (window->isOpen())
 	{
+		fps.update();
+
 		window->clear(sf::Color::Black);
 
 		shader.setUniform("playerPos", player.getPos());
 		shader.setUniform("playerFacing", player.getFacing());
 		window->draw(vertices, &shader);
 
-		fpsText.setString(std::to_string(1 / clock.restart().asSeconds()));
+		fpsText.setString("fps: " + std::to_string(fps.getFPS()));
 		window->draw(fpsText);
 
 		window->display();
@@ -106,7 +110,7 @@ void handleInput(sf::RenderWindow* window)
 	while (window->isOpen())
 	{
 		sf::Time dTime = clock.getElapsedTime();
-		float scalar = dTime.asMicroseconds() * 0.0000000001;
+		float scalar = dTime.asSeconds() * 0.0001;
 
 		float cosine = cos(player.getFacing());
 		float sine = sin(player.getFacing());
