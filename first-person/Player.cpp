@@ -30,3 +30,8 @@ void Player::setPos(float x, float y)
 {
 	this->pos = sf::Vector2f(x, y);
 }
+
+void Player::turn(float angle)
+{
+	this->facing += angle;
+}

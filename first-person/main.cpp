@@ -121,5 +121,9 @@ void handleInput(sf::RenderWindow* window)
 		{
 			player.setPos(pos.x + scalar*cosine, pos.y+scalar*sine);
 		}
+
+		int newMouseX = sf::Mouse::getPosition().x;
+		player.turn(-0.01f * (newMouseX - lastMouseX));
+		lastMouseX = newMouseX;
 	}
 }

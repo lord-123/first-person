@@ -13,6 +13,8 @@ public:
 	void setPos(sf::Vector2f pos);
 	void setPos(float x, float y);
 
+	void turn(float angle);
+
 private:
 	sf::Vector2f pos;
 
