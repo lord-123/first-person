@@ -109,8 +109,8 @@ void handleInput(sf::RenderWindow* window)
 
 	while (window->isOpen())
 	{
-		sf::Time dTime = clock.getElapsedTime();
-		float scalar = dTime.asSeconds() * 0.0001;
+		sf::Time dTime = clock.restart();
+		float scalar = dTime.asMicroseconds()/100;
 
 		float cosine = cos(player.getFacing());
 		float sine = sin(player.getFacing());

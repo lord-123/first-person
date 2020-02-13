@@ -1,11 +1,13 @@
 #version 150 core
 
+in vec3 position;
+
 uniform vec2 playerPos;
 uniform float playerFacing;
 
 void main()
 {
-	vec4 vertex = gl_Vertex;
+	vec3 vertex = position;
 
 	vertex.x -= playerPos.x;
 	vertex.y -= playerPos.y;
@@ -18,5 +20,5 @@ void main()
 	vertex.x = x;
 	vertex.y = y;
 
-	gl_Position = vertex;
+	gl_Position = vec4(vertex,1.0);
 }

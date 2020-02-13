@@ -7,30 +7,47 @@ out float distanceScalar;
 
 void main() 
 {
-	vec4 pos;
 	float newX;
 	float newY;
 
-	vec3 newPos[];
+	const int FOV = 90;
+	const float FOV_SIN = sin(FOV);
 
-	for(int i=0; i<2; i++)
+	vec4[2] vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
+
+	if(vertices[0].y > 0 || vertices[1].y > 0)
 	{
-		pos = gl_in[i].gl_Position;
+		float m = (vertices[1].y-vertices[0].y)/(vertices[1].x-vertices[0].x);
 
-		newX = (atan(pos.x, pos.y)/radians(90))*2;
-		pos.x = newX;
+		for(int i=0; i<2; i++)
+		{
+			if(vertices[i].x / FOV_SIN >= vertices[i].y && vertices[i].x > 0)
+			{
+				vertices[i].x = (FOV_SIN*(m*vertices[i].x-vertices[i].y))/(FOV_SIN*m-1);
+				vertices[i].y = vertices[i].x/FOV_SIN;
+			}
 
-		distanceScalar = 1/sqrt(pos.y);
-		newY = (distanceScalar/90)*2;
-		pos.y = newY*200;
+			if(-vertices[i].x / FOV_SIN >= vertices[i].y && vertices[i].x < 0)
+			{
+				vertices[i].x = (-FOV_SIN*(m*vertices[i].x-vertices[i].y))/(-FOV_SIN*m-1);
+				vertices[i].y = -vertices[i].x/FOV_SIN;
+			}
+			
+			newX = (atan(vertices[i].x, vertices[i].y)/radians(FOV))*2;
+			vertices[i].x = newX;
 
-		gl_Position = pos; 
-		EmitVertex();
+			distanceScalar = 1/sqrt(vertices[i].y);
+			newY = (distanceScalar/radians(FOV))*2;
+			vertices[i].y = newY*5;
 
-		pos.y = newY*-200;
+			gl_Position = vertices[i]; 
+			EmitVertex();
 
-		gl_Position = pos; 
-		EmitVertex();
+			vertices[i].y = newY*-5;
+
+			gl_Position = vertices[i]; 
+			EmitVertex();
+		}
 	}
 
     EndPrimitive();
