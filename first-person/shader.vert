@@ -9,8 +9,8 @@ void main()
 {
 	vec3 vertex = position;
 
-	vertex.x -= playerPos.x;
-	vertex.y -= playerPos.y;
+	vertex.x = position.x - playerPos.x;
+	vertex.y = position.y - playerPos.y;
 
 	float facing = playerFacing;
 
