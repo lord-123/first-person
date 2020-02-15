@@ -43,7 +43,7 @@ void main()
 			newX = (radians(90)-atan(vertices[i].y, vertices[i].x))/(FOV/2);
 			vertices[i].x = newX;
 
-			distanceScalar = 10/sqrt(pow(vertices[i].x,2) + pow(vertices[i].y,2));
+			distanceScalar = 1/sqrt(abs(vertices[i].y));
 			newY = (distanceScalar)/FOV;
 			vertices[i].y = newY*5;
 
