@@ -135,18 +135,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="Region.cpp" />
+    <ClCompile Include="util\FPS.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FPS.h" />
+    <ClInclude Include="Region.h" />
+    <ClInclude Include="util\FPS.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.frag" />
-    <None Include="shader.geom" />
-    <None Include="shader.vert" />
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.geom" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="cnr.otf" />

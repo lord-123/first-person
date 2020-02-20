@@ -1,14 +1,14 @@
 #version 330 core
 
 layout(lines) in;
-layout(triangle_strip, max_vertices=10) out;
+layout(triangle_strip, max_vertices=256) out;
 
 out float distanceScalar;
 
 void main() 
 {
-	float newX;
-	float newY;
+	float[2] ceilingY;
+	float[2] floorY;
 
 	const float FOV = radians(90);
 	const float FOV_SIN = sin(FOV);
@@ -29,7 +29,9 @@ void main()
 
 	float m = (vertices[1].y-vertices[0].y)/(vertices[1].x-vertices[0].x);
 
-	for(int i=0; i<2; i++)
+	float len = sqrt(pow(vertices[0].x-vertices[1].x,2)+pow(vertices[0].y-vertices[1].y,2));
+
+	for(int i = 0; i < 2; i++)
     {
         if(vertices[i].y < abs(vertices[i].x) * FOV_ALT_TAN)
         {
@@ -54,15 +56,14 @@ void main()
 		vertices[i].x = (radians(90)-atan(vertices[i].y, vertices[i].x))/(FOV/2);
 
 		distanceScalar = 1/sqrt(vertices[i].y);
-		newY = (distanceScalar)/FOV;
-		vertices[i].y = newY*5;
+		float newY = (distanceScalar)/FOV;
+		ceilingY[i] = newY*5;
+		floorY[i] = newY*-5;
 
-		gl_Position = vertices[i]; 
+		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
 		EmitVertex();
 
-		vertices[i].y = newY*-5;
-
-		gl_Position = vertices[i]; 
+		gl_Position = vec4(vertices[i].x, floorY[i], vertices[i].zw);
 		EmitVertex();
 	}
 

@@ -4,7 +4,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "Player.h"
-#include "FPS.h"
+#include "util/FPS.h"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -66,7 +66,7 @@ void renderingThread(sf::RenderWindow* window)
 	window->setActive(true);
 
 	sf::Shader shader;
-	shader.loadFromFile("shader.vert", "shader.geom", "shader.frag");
+	shader.loadFromFile("shaders/shader.vert", "shaders/shader.geom", "shaders/shader.frag");
 	if (!shader.isAvailable())
 	{
 		std::cout << "shader not available!" << std::endl;
@@ -81,7 +81,7 @@ void renderingThread(sf::RenderWindow* window)
 	sf::Text fpsText;
 	fpsText.setFont(font);
 	fpsText.setCharacterSize(24);
-	fpsText.setFillColor(sf::Color::White);
+	fpsText.setFillColor(sf::Color::Green);
 
 	FPS fps;
 
