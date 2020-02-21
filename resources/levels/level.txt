@@ -1,0 +1,22 @@
+region 5 -5
+region 5 -5
+
+vertex 0 0
+vertex 0 500
+vertex 500 500
+vertex 500 0
+
+vertex 200 200
+vertex 200 300
+vertex 300 300
+vertex 300 200
+
+wall 0 1 0
+wall 1 2 0
+wall 2 3 0
+wall 3 0 0
+
+wall 4 5 1 0
+wall 5 6 1 0
+wall 6 7 1 0
+wall 7 4 1 0
