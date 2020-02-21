@@ -8,7 +8,7 @@ public:
 	Player(sf::Vector2f pos, float facing);
 
 	sf::Vector2f getPos();
-	float getFacing();
+	const float getFacing();
 
 	void setPos(sf::Vector2f pos);
 	void setPos(float x, float y);

@@ -16,7 +16,7 @@ sf::Vector2f Player::getPos()
 	return this->pos;
 }
 
-float Player::getFacing()
+const float Player::getFacing()
 {
 	return this->facing;
 }

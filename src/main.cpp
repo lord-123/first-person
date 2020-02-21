@@ -3,8 +3,8 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "Player.h"
-#include "util/FPS.h"
+#include "entities/Player.cpp"
+#include "util/FPS.cpp"
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -18,6 +18,8 @@ void handleInput(sf::RenderWindow*);
 
 int main(int argc, char* argv[])
 {
+	std::cout << argv[0] << std::endl;
+
 	loadData();
 
 	sf::ContextSettings settings;
@@ -73,7 +75,7 @@ void renderingThread(sf::RenderWindow* window)
 	}
 
 	sf::Font font;
-	if (!font.loadFromFile("cnr.otf"))
+	if (!font.loadFromFile("resources/cnr.otf"))
 	{
 		std::cout << "failed to load font!" << std::endl;
 	}
