@@ -1,7 +1,7 @@
 #include "Wall.h"
 
 Wall::Wall()
-	: left(nullptr), right(nullptr), front(nullptr), rear(nullptr)
+	: left(), right(), front(), rear()
 {
 	vertices = sf::VertexArray(sf::Lines, 2);
 }
@@ -15,19 +15,11 @@ Wall::Wall(sf::Vector2f* left, sf::Vector2f* right, Region* front, Region* rear)
 }
 
 Wall::Wall(sf::Vector2f* left, sf::Vector2f* right, Region* front)
-	: left(left), right(right), front(front), rear(nullptr)
+	: left(left), right(right), front(front), rear()
 {
 	vertices = sf::VertexArray(sf::Lines, 2);
 	vertices[0] = (*this->left);
 	vertices[1] = (*this->right);
-}
-
-Wall::~Wall()
-{
-	delete left;
-	delete right;
-	delete front;
-	delete rear;
 }
 
 void Wall::setLeft(sf::Vector2f* l)

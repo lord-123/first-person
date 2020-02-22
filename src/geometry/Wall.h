@@ -8,7 +8,6 @@ public:
 	Wall();
 	Wall(sf::Vector2f* left, sf::Vector2f* right, Region* front, Region* rear);
 	Wall(sf::Vector2f* left, sf::Vector2f* right, Region* front);
-	~Wall();
 
 	void setLeft(sf::Vector2f* l);
 	void setRight(sf::Vector2f* r);
