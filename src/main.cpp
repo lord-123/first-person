@@ -9,6 +9,7 @@
 #include <math.h>
 #include <sstream>
 #include <geometry\WallArray.cpp>
+#include <util\returnline.cpp>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -66,20 +67,18 @@ void loadData()
 
 	while (std::getline(input, line))
 	{
-		std::string partition;
-
 		std::stringstream ss(line);
 
-		if (!std::getline(ss, partition, ' ')) continue;
+		std::string partition = returnline(ss, ' ');
+
+		if (partition == "") continue;
 
 		else if (partition == "region")
 		{
 			Region region;
 
-			std::getline(ss, partition, ' ');
-			region.ceilingY = atoi(partition.c_str());
-			std::getline(ss, partition, ' ');
-			region.floorY = atoi(partition.c_str());
+			region.ceilingY = atoi(returnline(ss, ' ').c_str());
+			region.floorY = atoi(returnline(ss, ' ').c_str());
 
 			regions.push_back(region);
 		}
@@ -88,10 +87,8 @@ void loadData()
 		{
 			sf::Vector2f vertex;
 
-			std::getline(ss, partition, ' ');
-			vertex.x = atoi(partition.c_str());
-			std::getline(ss, partition, ' ');
-			vertex.y = atoi(partition.c_str());
+			vertex.x = atoi(returnline(ss, ' ').c_str());
+			vertex.y = atoi(returnline(ss, ' ').c_str());
 
 			vertices.push_back(vertex);
 		}
@@ -100,27 +97,20 @@ void loadData()
 		{
 			Wall wall;
 
-			std::getline(ss, partition, ' ');
-			wall.setLeft(&vertices[atoi(partition.c_str())]);
-			std::getline(ss, partition, ' ');
-			wall.setRight(&vertices[atoi(partition.c_str())]);
-			std::getline(ss, partition, ' ');
-			wall.setFront(&regions[atoi(partition.c_str())]);
+			wall.setLeft(&vertices[atoi(returnline(ss, ' ').c_str())]);
+			wall.setRight(&vertices[atoi(returnline(ss, ' ').c_str())]);
+			wall.setFront(&regions[atoi(returnline(ss, ' ').c_str())]);
 
-			if (std::getline(ss, partition, ' ')) wall.setRear(&regions[atoi(partition.c_str())]);
+			std::string rear = returnline(ss, ' ');
+
+			if (rear != "") wall.setRear(&regions[atoi(rear.c_str())]);
 
 			walls.append(wall);
 		}
 
 		else if (partition == "player")
 		{
-			std::string x;
-			std::string y;
-
-			std::getline(ss, x, ' ');
-			std::getline(ss, y, ' ');
-
-			player.setPos(atoi(x.c_str()), atoi(y.c_str()));
+			player.setPos(atoi(returnline(ss, ' ').c_str()), atoi(returnline(ss, ' ').c_str()));
 		}
 	}
 
