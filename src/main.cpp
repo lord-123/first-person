@@ -56,50 +56,75 @@ int main(int argc, char* argv[])
 
 void loadData()
 {
-	//TODO: read in from file bloody hell this is bad
-	Region regions[2];
-	regions[0].ceilingY = 5;
-	regions[0].floorY = -5;
-	regions[1].ceilingY = 5;
-	regions[1].floorY = -5;
+	std::ifstream input;
+	input.open("resources/levels/level.txt");
 
-	sf::Vector2f vertices[8];
-	vertices[0].x = 0;
-	vertices[0].y = 0;
+	std::string line;
 
-	vertices[1].x = 0;
-	vertices[1].y = 500;
+	std::vector<Region> regions;
+	std::vector<sf::Vector2f> vertices;
 
-	vertices[2].x = 500;
-	vertices[2].y = 500;
+	while (std::getline(input, line))
+	{
+		std::string partition;
 
-	vertices[3].x = 500;
-	vertices[3].y = 0;
+		std::stringstream ss(line);
 
+		if (!std::getline(ss, partition, ' ')) continue;
 
-	vertices[4].x = 200;
-	vertices[4].y = 200;
+		else if (partition == "region")
+		{
+			Region region;
 
-	vertices[5].x = 200;
-	vertices[5].y = 300;
+			std::getline(ss, partition, ' ');
+			region.ceilingY = atoi(partition.c_str());
+			std::getline(ss, partition, ' ');
+			region.floorY = atoi(partition.c_str());
 
-	vertices[6].x = 300;
-	vertices[6].y = 300;
+			regions.push_back(region);
+		}
 
-	vertices[7].x = 300;
-	vertices[7].y = 200;
+		else if (partition == "vertex")
+		{
+			sf::Vector2f vertex;
 
-	walls.append(Wall(&vertices[0], &vertices[1], &regions[0]));
-	walls.append(Wall(&vertices[1], &vertices[2], &regions[0]));
-	walls.append(Wall(&vertices[2], &vertices[3], &regions[0]));
-	walls.append(Wall(&vertices[3], &vertices[0], &regions[0]));
+			std::getline(ss, partition, ' ');
+			vertex.x = atoi(partition.c_str());
+			std::getline(ss, partition, ' ');
+			vertex.y = atoi(partition.c_str());
 
-	walls.append(Wall(&vertices[4], &vertices[5], &regions[1], &regions[0]));
-	walls.append(Wall(&vertices[5], &vertices[6], &regions[1], &regions[0]));
-	walls.append(Wall(&vertices[6], &vertices[7], &regions[1], &regions[0]));
-	walls.append(Wall(&vertices[7], &vertices[4], &regions[1], &regions[0]));
+			vertices.push_back(vertex);
+		}
 
-	player = Player(sf::Vector2f(356.f, 94.f), M_PI / 2);
+		else if (partition == "wall")
+		{
+			Wall wall;
+
+			std::getline(ss, partition, ' ');
+			wall.setLeft(&vertices[atoi(partition.c_str())]);
+			std::getline(ss, partition, ' ');
+			wall.setRight(&vertices[atoi(partition.c_str())]);
+			std::getline(ss, partition, ' ');
+			wall.setFront(&regions[atoi(partition.c_str())]);
+
+			if (std::getline(ss, partition, ' ')) wall.setRear(&regions[atoi(partition.c_str())]);
+
+			walls.append(wall);
+		}
+
+		else if (partition == "player")
+		{
+			std::string x;
+			std::string y;
+
+			std::getline(ss, x, ' ');
+			std::getline(ss, y, ' ');
+
+			player.setPos(atoi(x.c_str()), atoi(y.c_str()));
+		}
+	}
+
+	input.close();
 }
 
 void renderingThread(sf::RenderWindow* window)

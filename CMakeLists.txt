@@ -5,6 +5,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 
 find_package(SFML 2.5.1 COMPONENTS system graphics REQUIRED)
 
+set(CMAKE_VS_JUST_MY_CODE_DEBUGGING true)
+
 add_executable(first-person src/main.cpp)
 
 target_link_libraries(first-person sfml-graphics sfml-system)
