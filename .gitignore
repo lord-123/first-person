@@ -352,4 +352,3 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 out/
-/src/geometry/Parser.h
