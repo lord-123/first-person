@@ -54,11 +54,12 @@ void main()
 		}
 			
 		vertices[i].x = (radians(90)-atan(vertices[i].y, vertices[i].x))/(FOV/2);
+		
+		ceilingY[i] = (radians(90)-atan(vertices[i].y,20))/(FOV/2);
+		floorY[i] = (radians(90)-atan(vertices[i].y,-20))/(FOV/2);
 
 		distanceScalar = 1/sqrt(vertices[i].y);
-		float newY = (distanceScalar)/FOV;
-		ceilingY[i] = newY*5;
-		floorY[i] = newY*-5;
+		
 
 		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
 		EmitVertex();
