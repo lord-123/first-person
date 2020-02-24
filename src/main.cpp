@@ -9,7 +9,7 @@
 #include <math.h>
 #include <sstream>
 #include <geometry\WallArray.cpp>
-#include <util\returnline.cpp>
+#include <helpers\split.cpp>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -69,48 +69,42 @@ void loadData()
 	{
 		std::stringstream ss(line);
 
-		std::string partition = returnline(ss, ' ');
+		std::vector<std::string> partitions = split(ss, ' ');
 
-		if (partition == "") continue;
+		if (!partitions.size()) continue;
 
-		else if (partition == "region")
+		else if (partitions[0] == "region")
 		{
 			Region region;
 
-			region.ceilingY = atoi(returnline(ss, ' ').c_str());
-			region.floorY = atoi(returnline(ss, ' ').c_str());
+			region.ceilingY = std::stoi(partitions[1]);
+			region.floorY = std::stoi(partitions[2]);
 
 			regions.push_back(region);
 		}
 
-		else if (partition == "vertex")
+		else if (partitions[0] == "vertex")
 		{
 			sf::Vector2f vertex;
 
-			vertex.x = atoi(returnline(ss, ' ').c_str());
-			vertex.y = atoi(returnline(ss, ' ').c_str());
+			vertex.x = static_cast<float>(std::stoi(partitions[1]));
+			vertex.y = static_cast<float>(std::stoi(partitions[2]));
 
 			vertices.push_back(vertex);
 		}
 
-		else if (partition == "wall")
+		else if (partitions[0] == "wall")
 		{
-			Wall wall;
+			Wall wall(&vertices[std::stoi(partitions[1])], &vertices[std::stoi(partitions[2])], &regions[std::stoi(partitions[3])]);
 
-			wall.setLeft(&vertices[atoi(returnline(ss, ' ').c_str())]);
-			wall.setRight(&vertices[atoi(returnline(ss, ' ').c_str())]);
-			wall.setFront(&regions[atoi(returnline(ss, ' ').c_str())]);
-
-			std::string rear = returnline(ss, ' ');
-
-			if (rear != "") wall.setRear(&regions[atoi(rear.c_str())]);
+			if (partitions.size() > 4) wall.setRear(&regions[std::stoi(partitions[4])]);
 
 			walls.append(wall);
 		}
 
-		else if (partition == "player")
+		else if (partitions[0] == "player")
 		{
-			player.setPos(atoi(returnline(ss, ' ').c_str()), atoi(returnline(ss, ' ').c_str()));
+			player.setPos(std::stoi(partitions[1]), std::stoi(partitions[2]));
 		}
 	}
 
