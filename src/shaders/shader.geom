@@ -10,6 +10,8 @@ void main()
 	float[2] ceilingY;
 	float[2] floorY;
 
+	float[2] distanceScalars;
+
 	const float FOV = radians(90);
 	const float FOV_SIN = sin(FOV);
 	const float FOV_COS = cos(FOV);
@@ -31,7 +33,9 @@ void main()
 
 	float len = sqrt(pow(vertices[0].x-vertices[1].x,2)+pow(vertices[0].y-vertices[1].y,2));
 
-	for(int i = 0; i < 2; i++)
+	int i;
+
+	for(i = 0; i < 2; i++)
     {
         if(vertices[i].y < abs(vertices[i].x) * FOV_ALT_TAN)
         {
@@ -55,11 +59,23 @@ void main()
 			
 		vertices[i].x = (radians(90)-atan(vertices[i].y, vertices[i].x))/(FOV/2);
 
-		distanceScalar = 1/sqrt(vertices[i].y);
+		distanceScalars[i] = 1/vertices[i].y;
 		float newY = (distanceScalar)/FOV;
 		ceilingY[i] = newY*5;
 		floorY[i] = newY*-5;
 
+//		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
+//		EmitVertex();
+//
+//		gl_Position = vec4(vertices[i].x, floorY[i], vertices[i].zw);
+//		EmitVertex();
+	}
+
+//	EndPrimitive();
+
+	for (i = 0; i < 2; i++)
+	{
+		distanceScalar = 1/vertices[i].y;
 		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
 		EmitVertex();
 

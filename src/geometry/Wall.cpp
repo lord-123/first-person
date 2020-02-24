@@ -3,13 +3,13 @@
 Wall::Wall()
 	: left(), right(), front(), rear()
 {
-	vertices = sf::VertexArray(sf::Lines, 2);
+	vertices = sf::VertexArray(sf::PrimitiveType::Lines, 2);
 }
 
 Wall::Wall(sf::Vector2f* left, sf::Vector2f* right, Region* front, Region* rear)
 	: left(left), right(right), front(front), rear(rear)
 {
-	vertices = sf::VertexArray(sf::Lines, 2);
+	vertices = sf::VertexArray(sf::PrimitiveType::Lines, 2);
 	vertices[0] = (*this->left);
 	vertices[1] = (*this->right);
 }
