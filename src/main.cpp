@@ -14,6 +14,8 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+bool debug = false;
+
 WallArray walls;
 Player player;
 
@@ -47,6 +49,9 @@ int main(int argc, char* argv[])
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::F3) debug = !debug;
 				break;
 			}
 		}
@@ -145,8 +150,14 @@ void renderingThread(sf::RenderWindow* window)
 		shader.setUniform("playerFacing", player.getFacing());
 		window->draw(walls, &shader);
 
-		fpsText.setString("fps: " + std::to_string(fps.getFPS()));
-		window->draw(fpsText);
+		if (debug)
+		{
+			fpsText.setString("fps: " + std::to_string(fps.getFPS()) + "\n"
+							+ "x: " + std::to_string(player.getPos().x) + "\n"
+							+ "y: " + std::to_string(player.getPos().y) + "\n"
+							+ "facing: " + std::to_string(player.getFacing()) + " (" + std::to_string(player.getFacing() * 180.0 / M_PI) + ")");
+			window->draw(fpsText);
+		}
 
 		window->display();
 	}
