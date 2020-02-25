@@ -11,10 +11,16 @@ add_executable(first-person src/main.cpp)
 
 target_link_libraries(first-person sfml-graphics sfml-system)
 
-file(GLOB RESOURCES "resources/*")
+add_custom_command(
+	TARGET first-person POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		    ${CMAKE_SOURCE_DIR}/resources
+			${CMAKE_CURRENT_BINARY_DIR}/resources
+)
 
-file(COPY ${RESOURCES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
-
-file(GLOB SHADERS "src/shaders/*")
-
-file(COPY ${SHADERS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+add_custom_command(
+	TARGET first-person POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		    ${CMAKE_SOURCE_DIR}/src/shaders
+			${CMAKE_CURRENT_BINARY_DIR}/shaders
+)
