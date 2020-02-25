@@ -58,7 +58,7 @@ void main()
 		ceilingY[i] = (radians(90)-atan(vertices[i].y,20))/(FOV/2);
 		floorY[i] = (radians(90)-atan(vertices[i].y,-20))/(FOV/2);
 
-		distanceScalar = 1/sqrt(vertices[i].y);
+		distanceScalar = vertices[i].y;
 		
 
 		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
