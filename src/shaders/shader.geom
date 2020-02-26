@@ -23,7 +23,7 @@ void main()
 	vec4[2] vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
 
 	if(vertices[0].y < 0 && vertices[1].y < 0) return;
-	 
+	
 	if(vertices[0].y < vertices[0].x * FOV_ALT_TAN && vertices[1].y < vertices[1].x * FOV_ALT_TAN) return;
 	if(vertices[0].y < -vertices[0].x * FOV_ALT_TAN && vertices[1].y < -vertices[1].x * FOV_ALT_TAN) return;
 
@@ -57,16 +57,66 @@ void main()
 		
 		ceilingY[i] = (radians(90)-atan(vertices[i].y,20))/(FOV/2);
 		floorY[i] = (radians(90)-atan(vertices[i].y,-20))/(FOV/2);
-
-		distanceScalar = vertices[i].y;
-		
-
-		gl_Position = vec4(vertices[i].x, ceilingY[i], vertices[i].zw);
-		EmitVertex();
-
-		gl_Position = vec4(vertices[i].x, floorY[i], vertices[i].zw);
-		EmitVertex();
 	}
+
+	vec4 midpoint = vec4((vertices[0].x+vertices[1].x)/2, (floorY[0]+ceilingY[1])/2, vertices[0].zw);
+	float midScalar = (vertices[0].y+vertices[1].y)/2;
+
+	// output triangles like this
+	// +---+
+	// |\./|
+	// |.+.|
+	// |/.\|
+	// +---+
+
+	// top
+	distanceScalar = vertices[0].y;
+	gl_Position = vec4(vertices[0].x, ceilingY[0], vertices[0].zw);
+	EmitVertex();
+
+	distanceScalar = midScalar;
+	gl_Position = midpoint;
+	EmitVertex();
+
+	distanceScalar = vertices[1].y;
+	gl_Position = vec4(vertices[1].x, ceilingY[1], vertices[1].zw);
+	EmitVertex();
+
+	// right
+	gl_Position = vec4(vertices[1].x, ceilingY[1], vertices[1].zw);
+	EmitVertex();
+
+	distanceScalar = midScalar;
+	gl_Position = midpoint;
+	EmitVertex();
+
+	distanceScalar = vertices[1].y;
+	gl_Position = vec4(vertices[1].x, floorY[1], vertices[1].zw);
+	EmitVertex();
+
+	//bottom
+	gl_Position = vec4(vertices[1].x, floorY[1], vertices[1].zw);
+	EmitVertex();
+
+	distanceScalar = midScalar;
+	gl_Position = midpoint;
+	EmitVertex();
+
+	distanceScalar = vertices[0].y;
+	gl_Position = vec4(vertices[0].x, floorY[0], vertices[0].zw);
+	EmitVertex();
+
+	//left
+	gl_Position = vec4(vertices[0].x, floorY[0], vertices[0].zw);
+	EmitVertex();
+
+	distanceScalar = midScalar;
+	gl_Position = midpoint;
+	EmitVertex();
+
+	distanceScalar = vertices[0].y;
+	gl_Position = vec4(vertices[0].x, ceilingY[0], vertices[0].zw);
+	EmitVertex();
 
 	EndPrimitive();
 }
