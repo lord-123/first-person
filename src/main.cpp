@@ -8,8 +8,12 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <sstream>
-#include <geometry\WallArray.cpp>
-#include <helpers\split.cpp>
+#include <geometry/WallArray.cpp>
+#include <helpers/split.cpp>
+
+#ifdef linux
+#include <X11/Xlib.h>
+#endif
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -21,26 +25,27 @@ Player player;
 
 void loadData();
 void renderingThread(sf::RenderWindow*);
-void handleInput(sf::RenderWindow*);
+void handleInput();
 
 int main(int argc, char* argv[])
 {
-	std::cout << argv[0] << std::endl;
+	XInitThreads();
 
 	loadData();
 
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 8;
+	settings.antialiasingLevel = 0;
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
-	window.setActive(false);
+
 
 	sf::Thread renderer(&renderingThread, &window);
+	window.setActive(false);
 	renderer.launch();
 
-	sf::Thread input(&handleInput, &window);
+	sf::Thread input(&handleInput);
 	input.launch();
 
-	while (window.isOpen())
+	while (1)
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -49,7 +54,7 @@ int main(int argc, char* argv[])
 			{
 			case sf::Event::Closed:
 				window.close();
-				break;
+				return 0;
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::F3) debug = !debug;
 				break;
@@ -118,7 +123,8 @@ void loadData()
 
 void renderingThread(sf::RenderWindow* window)
 {
-	window->setActive(true);
+	std::cout << "shaders available: " << sf::Shader::isAvailable() << std::endl;
+	std::cout << "geometry shader available: " << sf::Shader::isGeometryAvailable() << std::endl;
 
 	sf::Shader shader;
 	shader.loadFromFile("shaders/shader.vert", "shaders/shader.geom", "shaders/shader.frag");
@@ -140,7 +146,7 @@ void renderingThread(sf::RenderWindow* window)
 
 	FPS fps;
 
-	while (window->isOpen())
+	while (true)
 	{
 		fps.update();
 
@@ -163,12 +169,12 @@ void renderingThread(sf::RenderWindow* window)
 	}
 }
 
-void handleInput(sf::RenderWindow* window)
+void handleInput()
 {
 	sf::Clock clock;
 	int lastMouseX = sf::Mouse::getPosition().x;
 
-	while (window->isOpen())
+	while (true)
 	{
 		sf::Time dTime = clock.restart();
 		float scalar = dTime.asMicroseconds()/200;

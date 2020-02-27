@@ -9,7 +9,7 @@ set(CMAKE_VS_JUST_MY_CODE_DEBUGGING true)
 
 add_executable(first-person src/main.cpp)
 
-target_link_libraries(first-person sfml-graphics sfml-system)
+target_link_libraries(first-person sfml-graphics sfml-system -lX11)
 
 add_custom_target(copy-resource-directory ALL
 	COMMAND ${CMAKE_COMMAND} -E copy_directory

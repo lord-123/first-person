@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 
 
 in float distanceScalar;
 out vec4 colourOut;

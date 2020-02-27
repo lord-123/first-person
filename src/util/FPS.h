@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML\System\Clock.hpp>
+#include <SFML/System/Clock.hpp>
 //inspired by https://gist.github.com/kenpower/7233967
 
 class FPS
