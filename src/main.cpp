@@ -29,12 +29,14 @@ void handleInput();
 
 int main(int argc, char* argv[])
 {
+#ifdef linux
 	XInitThreads();
+#endif
 
 	loadData();
 
 	sf::ContextSettings settings;
-	settings.antialiasingLevel = 0;
+	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
 
 
