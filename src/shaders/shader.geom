@@ -4,6 +4,7 @@ layout(lines) in;
 layout(triangle_strip, max_vertices=256) out;
 
 out float distanceScalar;
+out vec2 texCoords;
 
 void main() 
 {
@@ -72,50 +73,56 @@ void main()
 	// top
 	distanceScalar = vertices[0].y;
 	gl_Position = vec4(vertices[0].x, ceilingY[0], vertices[0].zw);
+	texCoords = vec2(0.0, 1.0);
 	EmitVertex();
 
 	distanceScalar = midScalar;
 	gl_Position = midpoint;
+	texCoords = vec2(0.5, 0.5);
 	EmitVertex();
 
 	distanceScalar = vertices[1].y;
 	gl_Position = vec4(vertices[1].x, ceilingY[1], vertices[1].zw);
+	texCoords = vec2(1.0, 1.0);
 	EmitVertex();
 
 	// right
-	gl_Position = vec4(vertices[1].x, ceilingY[1], vertices[1].zw);
 	EmitVertex();
 
 	distanceScalar = midScalar;
 	gl_Position = midpoint;
+	texCoords = vec2(0.5, 0.5);
 	EmitVertex();
 
 	distanceScalar = vertices[1].y;
 	gl_Position = vec4(vertices[1].x, floorY[1], vertices[1].zw);
+	texCoords = vec2(1.0, 0.0);
 	EmitVertex();
 
 	//bottom
-	gl_Position = vec4(vertices[1].x, floorY[1], vertices[1].zw);
 	EmitVertex();
 
 	distanceScalar = midScalar;
 	gl_Position = midpoint;
+	texCoords = vec2(0.5, 0.5);
 	EmitVertex();
 
 	distanceScalar = vertices[0].y;
 	gl_Position = vec4(vertices[0].x, floorY[0], vertices[0].zw);
+	texCoords = vec2(0.0, 0.0);
 	EmitVertex();
 
 	//left
-	gl_Position = vec4(vertices[0].x, floorY[0], vertices[0].zw);
 	EmitVertex();
 
 	distanceScalar = midScalar;
 	gl_Position = midpoint;
+	texCoords = vec2(0.5, 0.5);
 	EmitVertex();
 
 	distanceScalar = vertices[0].y;
 	gl_Position = vec4(vertices[0].x, ceilingY[0], vertices[0].zw);
+	texCoords = vec2(0.0, 1.0);
 	EmitVertex();
 
 	EndPrimitive();

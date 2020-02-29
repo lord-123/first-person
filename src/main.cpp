@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
 #endif
 
 	loadData();
-
 	sf::ContextSettings settings;
+
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
 
@@ -147,6 +147,14 @@ void renderingThread(sf::RenderWindow* window)
 	fpsText.setFillColor(sf::Color::Green);
 
 	FPS fps;
+
+	sf::Texture texture;
+	if (!texture.loadFromFile("resources/textures/minecraft_stone.png"))
+	{
+		std::cout << "failed to load texture!" << std::endl;
+	}
+
+	shader.setUniform("img", texture);
 
 	while (true)
 	{
