@@ -154,6 +154,8 @@ void renderingThread(sf::RenderWindow* window)
 		std::cout << "failed to load texture!" << std::endl;
 	}
 
+	texture.setRepeated(true);
+
 	shader.setUniform("img", texture);
 
 	while (true)
