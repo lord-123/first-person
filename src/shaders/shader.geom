@@ -6,20 +6,20 @@ layout(triangle_strip, max_vertices=256) out;
 out float distanceScalar;
 out vec3 texCoords;
 
-flat out float[2] screenX;
-flat out float[2] ceilingY;
-flat out float[2] floorY;
+const float RAD_90 = radians(90);
+
+uniform float FOV = RAD_90;
 
 void main() 
 {
-	const float FOV = radians(90);
-	const float FOV_SIN = sin(FOV);
-	const float FOV_COS = cos(FOV);
-	const float FOV_TAN = tan(FOV);
+	float[2] screenX;
+	float[2] ceilingY;
+	float[2] floorY;
 
-	const float FOV_ALT = radians(90)-FOV/2;
-	const float FOV_ALT_SIN = sin(FOV_ALT);
-	const float FOV_ALT_COS = cos(FOV_ALT);
+	float[2] heights;
+	float[2] distances;
+
+	const float FOV_ALT = RAD_90-FOV/2;
 	const float FOV_ALT_TAN = tan(FOV_ALT);
 
 	vec4[2] vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
@@ -55,33 +55,34 @@ void main()
 			}
 		}
 			
-		screenX[i] = (radians(90)-atan(vertices[i].y, vertices[i].x))/(FOV/2);
+		screenX[i] = (RAD_90-atan(vertices[i].y, vertices[i].x))/(FOV/2);
 		
-		ceilingY[i] = (radians(90)-atan(vertices[i].y,20))/(FOV/2);
-		floorY[i] = (radians(90)-atan(vertices[i].y,-20))/(FOV/2);
+		ceilingY[i] = (RAD_90-atan(vertices[i].y,20))/(FOV/2);
+		floorY[i] = (RAD_90-atan(vertices[i].y,-20))/(FOV/2);
 	}
 
-	float leftHeight = ceilingY[0] - floorY[0];
-	float rightHeight = ceilingY[1] - floorY[1];
+	for (int i = 0; i < 2; i++)
+	{
+		heights[i] = ceilingY[i] - floorY[i];
+		distances[i] = sqrt(pow(vertices[i].x, 2) + pow(vertices[i].y, 2));
+	}
 
-	distanceScalar = vertices[0].y;
-	gl_Position = vec4(screenX[0], 0 - leftHeight / 2, 0.0, 1.0);
-	texCoords = vec3(0.0, 0.0, leftHeight);
+	distanceScalar = distances[0];
+	gl_Position = vec4(screenX[0], floorY[0], 0.0, 1.0);
+	texCoords = vec3(0.0, 0.0, heights[0]);
 	EmitVertex();
 
-	distanceScalar = vertices[0].y;
-	gl_Position = vec4(screenX[0], 0 + leftHeight / 2, 0.0, 1.0);
-	texCoords = vec3(0.0, leftHeight, leftHeight);
+	gl_Position = vec4(screenX[0], ceilingY[0], 0.0, 1.0);
+	texCoords = vec3(0.0, heights[0], heights[0]);
 	EmitVertex();
 
-	distanceScalar = vertices[1].y;
-	gl_Position = vec4(screenX[1], 0 - rightHeight / 2, 0.0, 1.0);
-	texCoords = vec3(rightHeight, 0.0, rightHeight);
+	distanceScalar = distances[1];
+	gl_Position = vec4(screenX[1], floorY[1], 0.0, 1.0);
+	texCoords = vec3(heights[1], 0.0, heights[1]);
 	EmitVertex();
 
-	distanceScalar = vertices[1].y;
-	gl_Position = vec4(screenX[1], 0 + rightHeight / 2, 0.0, 1.0);
-	texCoords = vec3(rightHeight, rightHeight, rightHeight);
+	gl_Position = vec4(screenX[1], ceilingY[1], 0.0, 1.0);
+	texCoords = vec3(heights[1], heights[1], heights[1]);
 	EmitVertex();
 
 	EndPrimitive();

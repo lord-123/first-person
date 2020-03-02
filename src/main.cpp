@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 	sf::Thread input(&handleInput);
 	input.launch();
 
-	while (1)
+	while (true)
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -56,6 +56,8 @@ int main(int argc, char* argv[])
 			{
 			case sf::Event::Closed:
 				window.close();
+				renderer.terminate();
+				input.terminate();
 				return 0;
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::F3) debug = !debug;
@@ -156,6 +158,7 @@ void renderingThread(sf::RenderWindow* window)
 
 	texture.setRepeated(true);
 
+	shader.setUniform("FOV", (float)M_PI / 2);
 	shader.setUniform("img", texture);
 
 	while (true)
