@@ -1,26 +1,25 @@
+#define _USE_MATH_DEFINES
+
+#ifdef linux
+#include <X11/Xlib.h>
+#endif
+
+#include <geometry/Sector.cpp>
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <iostream>
 #include "entities/Player.cpp"
 #include "util/FPS.cpp"
-#include "geometry/Region.h"
-#include "geometry/Wall.cpp"
-#define _USE_MATH_DEFINES
 #include <math.h>
 #include <sstream>
-#include <geometry/WallArray.cpp>
 #include <helpers/split.cpp>
-
-#ifdef linux
-#include <X11/Xlib.h>
-#endif
 
 #define WIDTH 800
 #define HEIGHT 600
 
 bool debug = false;
 
-WallArray walls;
+std::vector<Sector> sectors;
 Player player;
 
 void loadData();
@@ -72,11 +71,11 @@ int main(int argc, char* argv[])
 void loadData()
 {
 	std::ifstream input;
-	input.open("resources/levels/level.txt");
+	input.open("resources/levels/newlvl.txt");
 
 	std::string line;
 
-	std::vector<Region> regions;
+	
 	std::vector<sf::Vector2f> vertices;
 
 	while (std::getline(input, line))
@@ -87,14 +86,9 @@ void loadData()
 
 		if (!partitions.size()) continue;
 
-		else if (partitions[0] == "region")
+		else if (partitions[0] == "#")
 		{
-			Region region;
-
-			region.ceilingY = std::stoi(partitions[1]);
-			region.floorY = std::stoi(partitions[2]);
-
-			regions.push_back(region);
+			continue;
 		}
 
 		else if (partitions[0] == "vertex")
@@ -107,13 +101,26 @@ void loadData()
 			vertices.push_back(vertex);
 		}
 
-		else if (partitions[0] == "wall")
+		else if (partitions[0] == "sector")
 		{
-			Wall wall(&vertices[std::stoi(partitions[1])], &vertices[std::stoi(partitions[2])], &regions[std::stoi(partitions[3])]);
+			Sector sector;
 
-			if (partitions.size() > 4) wall.setRear(&regions[std::stoi(partitions[4])]);
+			sector.ceiling = std::stoi(partitions[1]);
+			sector.floor = std::stoi(partitions[2]);
 
-			walls.append(wall);
+			int length = (partitions.size() - 3) / 2;
+
+			for (int i = 0; i < length; i++)
+			{
+				sector.addVertex(&vertices[std::stoi(partitions[i + 3])]);
+			}
+
+			for (int i = length + 3; i < partitions.size(); i++)
+			{
+				sector.neighbours.push_back(std::stoi(partitions[i]));
+			}
+
+			sectors.push_back(sector);
 		}
 
 		else if (partitions[0] == "player")
@@ -169,7 +176,10 @@ void renderingThread(sf::RenderWindow* window)
 
 		shader.setUniform("playerPos", player.getPos());
 		shader.setUniform("playerFacing", player.getFacing());
-		window->draw(walls, &shader);
+		for (int i = 0; i < sectors.size(); i++)
+		{
+			window->draw(sectors[i], &shader);
+		}
 
 		if (debug)
 		{

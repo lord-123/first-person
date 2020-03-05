@@ -1,0 +1,17 @@
+# vertices (x, y)
+vertex 0 0
+vertex 0 500
+vertex 500 500
+vertex 500 0
+
+vertex 200 200
+vertex 200 300
+vertex 300 300
+vertex 300 200
+
+# sector (floor, ceiling, vertices cw, "opposite" sector)
+sector 0 40 0 1 2 3 0 -1 -1 -1 -1 -1
+sector 10 20 4 5 6 7 4 0 0 0 0 0
+
+# player (x, y)
+player 250 10
