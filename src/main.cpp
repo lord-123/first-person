@@ -1,9 +1,5 @@
 #define _USE_MATH_DEFINES
 
-#ifdef linux
-#include <X11/Xlib.h>
-#endif
-
 #include <geometry/Sector.cpp>
 #include <SFML/Graphics.hpp>
 #include <fstream>
@@ -13,6 +9,10 @@
 #include <math.h>
 #include <sstream>
 #include <helpers/split.cpp>
+
+#ifdef linux
+#include <X11/Xlib.h>
+#endif
 
 #define WIDTH 800
 #define HEIGHT 600
