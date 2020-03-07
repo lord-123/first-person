@@ -6,12 +6,12 @@ Player::Player()
 	facing = 0.f;
 }
 
-Player::Player(sf::Vector2f pos, float facing)
-	: pos(pos), facing(facing)
+Player::Player(sf::Vector2f pos, float facing, int sector)
+	: pos(pos), facing(facing), sector(sector)
 {
 }
 
-sf::Vector2f Player::getPos()
+const sf::Vector2f Player::getPos()
 {
 	return this->pos;
 }
@@ -19,6 +19,11 @@ sf::Vector2f Player::getPos()
 const float Player::getFacing()
 {
 	return this->facing;
+}
+
+const int Player::getSector()
+{
+	return this->sector;
 }
 
 void Player::setPos(sf::Vector2f pos)

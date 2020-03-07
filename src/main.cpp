@@ -126,6 +126,7 @@ void loadData()
 		else if (partitions[0] == "player")
 		{
 			player.setPos(std::stoi(partitions[1]), std::stoi(partitions[2]));
+
 		}
 	}
 
@@ -176,10 +177,7 @@ void renderingThread(sf::RenderWindow* window)
 
 		shader.setUniform("playerPos", player.getPos());
 		shader.setUniform("playerFacing", player.getFacing());
-		for (int i = 0; i < sectors.size(); i++)
-		{
-			window->draw(sectors[i], &shader);
-		}
+		window->draw(sectors[player.getSector()], &shader);
 
 		if (debug)
 		{

@@ -5,10 +5,11 @@ class Player
 {
 public:
 	Player();
-	Player(sf::Vector2f pos, float facing);
+	Player(sf::Vector2f pos, float facing, int sector);
 
-	sf::Vector2f getPos();
+	const sf::Vector2f getPos();
 	const float getFacing();
+	const int getSector();
 
 	void setPos(sf::Vector2f pos);
 	void setPos(float x, float y);
@@ -17,6 +18,7 @@ public:
 
 private:
 	sf::Vector2f pos;
+	int sector;
 
 	float facing;
 };
