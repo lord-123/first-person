@@ -68,20 +68,20 @@ void main()
 	}
 
 	distanceScalar = distances[0];
-	gl_Position = vec4(screenX[0], floorY[0], 0.0, 1.0);
+	gl_Position = vec4(screenX[0], floorY[0], -1/distances[0]+1, 1.0);
 	texCoords = vec3(0.0, 0.0, heights[0]);
 	EmitVertex();
 
-	gl_Position = vec4(screenX[0], ceilingY[0], 0.0, 1.0);
+	gl_Position = vec4(screenX[0], ceilingY[0], -1/distances[0]+1, 1.0);
 	texCoords = vec3(0.0, heights[0], heights[0]);
 	EmitVertex();
 
 	distanceScalar = distances[1];
-	gl_Position = vec4(screenX[1], floorY[1], 0.0, 1.0);
+	gl_Position = vec4(screenX[1], floorY[1], -1/distances[1]+1, 1.0);
 	texCoords = vec3(heights[1], 0.0, heights[1]);
 	EmitVertex();
 
-	gl_Position = vec4(screenX[1], ceilingY[1], 0.0, 1.0);
+	gl_Position = vec4(screenX[1], ceilingY[1], -1/distances[1]+1, 1.0);
 	texCoords = vec3(heights[1], heights[1], heights[1]);
 	EmitVertex();
 

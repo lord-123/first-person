@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #include <fstream>
 #include <iostream>
 #include "entities/Player.cpp"
@@ -24,7 +25,7 @@ WallArray walls;
 Player player;
 
 void loadData();
-void renderingThread(sf::RenderWindow*);
+void renderingThread(sf::Window*);
 void handleInput();
 
 int main(int argc, char* argv[])
@@ -34,14 +35,15 @@ int main(int argc, char* argv[])
 #endif
 
 	loadData();
+
 	sf::ContextSettings settings;
-
 	settings.antialiasingLevel = 8;
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
+	settings.depthBits = 24;
 
+	sf::Window window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
+	window.setActive(false);
 
 	sf::Thread renderer(&renderingThread, &window);
-	window.setActive(false);
 	renderer.launch();
 
 	sf::Thread input(&handleInput);
@@ -125,8 +127,13 @@ void loadData()
 	input.close();
 }
 
-void renderingThread(sf::RenderWindow* window)
+void renderingThread(sf::Window* window)
 {
+	window->setActive(true);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
 	std::cout << "shaders available: " << sf::Shader::isAvailable() << std::endl;
 	std::cout << "geometry shader available: " << sf::Shader::isGeometryAvailable() << std::endl;
 
@@ -161,16 +168,15 @@ void renderingThread(sf::RenderWindow* window)
 	shader.setUniform("FOV", (float)M_PI / 2);
 	shader.setUniform("img", texture);
 
-	while (true)
+	sf::Shader::bind(&shader);
+
+	while (window->isOpen())
 	{
 		fps.update();
 
-		window->clear(sf::Color::Black);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.setUniform("playerPos", player.getPos());
-		shader.setUniform("playerFacing", player.getFacing());
-		window->draw(walls, &shader);
-
+		/*
 		if (debug)
 		{
 			fpsText.setString("fps: " + std::to_string(fps.getFPS()) + "\n"
@@ -178,7 +184,12 @@ void renderingThread(sf::RenderWindow* window)
 							+ "y: " + std::to_string(player.getPos().y) + "\n"
 							+ "facing: " + std::to_string(player.getFacing()) + " (" + std::to_string(player.getFacing() * 180.0 / M_PI) + ")");
 			window->draw(fpsText);
-		}
+		}*/
+
+		shader.setUniform("playerPos", player.getPos());
+		shader.setUniform("playerFacing", player.getFacing());
+
+		walls.draw();
 
 		window->display();
 	}

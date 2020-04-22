@@ -44,7 +44,12 @@ void Wall::setRear(Region* r)
 	this->rear = r;
 }
 
-void Wall::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Wall::draw()
 {
-	target.draw(vertices, states);
+	glBegin(GL_LINES);
+	for (int i = 0; i < 2; i++)
+	{
+		glVertex2f(vertices[i].position.x, vertices[i].position.y);
+	}
+	glEnd();
 }

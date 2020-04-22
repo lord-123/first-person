@@ -1,8 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 #include "Region.h"
 
-class Wall : public sf::Drawable
+class Wall
 {
 public:
 	Wall();
@@ -14,6 +14,8 @@ public:
 	void setFront(Region* f);
 	void setRear(Region* r);
 
+	void draw();
+
 private:
 	sf::VertexArray vertices;
 
@@ -22,6 +24,4 @@ private:
 
 	Region* front;
 	Region* rear;
-
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
