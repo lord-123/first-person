@@ -34,10 +34,10 @@ void main()
 	float len = sqrt(pow(vertices[0].x-vertices[1].x,2)+pow(vertices[0].y-vertices[1].y,2));
 
 	for(int i = 0; i < 2; i++)
-    {
-        if(vertices[i].y < abs(vertices[i].x) * FOV_ALT_TAN)
-        {
-            vec2 clipRight;
+	{
+		if(vertices[i].y < abs(vertices[i].x) * FOV_ALT_TAN)
+		{
+			vec2 clipRight;
 			clipRight.x = (m*vertices[i].x-vertices[i].y)/(m-FOV_ALT_TAN);
 			clipRight.y = clipRight.x * FOV_ALT_TAN;
 
