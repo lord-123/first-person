@@ -9,6 +9,12 @@ out vec3 texCoords;
 const float RAD_90 = radians(90);
 
 uniform float FOV = RAD_90;
+#define FOV_ALT RAD_90-FOV/2
+#define FOV_ALT_TAN tan(FOV_ALT)
+
+vec4[2] vertices;
+
+float m;
 
 float[2] screenX;
 float[2] ceilingY;
@@ -17,44 +23,48 @@ float[2] floorY;
 float[2] heights;
 float[2] distances;
 
+void clipNear(int i)
+{
+	vertices[i].x = (vertices[0].x - (vertices[0].y/m));
+	vertices[i].y = 0;
+}
+
+void clipLeft(int i)
+{
+	vertices[i].x = (vertices[0].y-m*vertices[0].x)/(-FOV_ALT_TAN-m);
+	vertices[i].y = -vertices[i].x*FOV_ALT_TAN;
+}
+
+void clipRight(int i)
+{
+	vertices[i].x = (vertices[0].y-m*vertices[0].x)/(FOV_ALT_TAN-m);
+	vertices[i].y = vertices[i].x*FOV_ALT_TAN;
+}
+
 void main() 
 {
-	const float FOV_ALT = RAD_90-FOV/2;
-	const float FOV_ALT_TAN = tan(FOV_ALT);
-
-	vec4[2] vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
+	vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
 
 	// ignore wall if completely out of the camera's FOV
 	if(vertices[0].y < 0 && vertices[1].y < 0) return;
 	if(vertices[0].y < vertices[0].x * FOV_ALT_TAN && vertices[1].y < vertices[1].x * FOV_ALT_TAN) return;
 	if(vertices[0].y < -vertices[0].x * FOV_ALT_TAN && vertices[1].y < -vertices[1].x * FOV_ALT_TAN) return;
 
-	float m = (vertices[1].y-vertices[0].y)/(vertices[1].x-vertices[0].x);
+	m = (vertices[1].y-vertices[0].y)/(vertices[1].x-vertices[0].x);
 
 	float len = length(vertices[0]-vertices[1]);
 
 	for(int i = 0; i < 2; i++)
 	{
-		if(vertices[i].y < abs(vertices[i].x) * FOV_ALT_TAN)
-		{
-			vec2 clipRight;
-			clipRight.x = (m*vertices[i].x-vertices[i].y)/(m-FOV_ALT_TAN);
-			clipRight.y = clipRight.x * FOV_ALT_TAN;
+		if (vertices[i].y < vertices[i].x * FOV_ALT_TAN)
+			clipRight(i);
 
-			vec2 clipLeft;
-			clipLeft.x = (m*vertices[i].x-vertices[i].y)/(m+FOV_ALT_TAN);
-			clipLeft.y = -clipLeft.x * FOV_ALT_TAN;
+		if (vertices[i].y < vertices[i].x * -FOV_ALT_TAN)
+			clipLeft(i);
 
-			if(clipRight.x > 0 && vertices[i].x * FOV_ALT_TAN > vertices[i].y)
-			{
-				vertices[i] = vec4(clipRight, vertices[i].zw);
-			}
-			else if(clipLeft.x < 0 && -vertices[i].x * FOV_ALT_TAN > vertices[i].y)
-			{
-				vertices[i] = vec4(clipLeft, vertices[i].zw);
-			}
-		}
-			
+		if(vertices[i].y < 0)
+			clipNear(i);
+
 		screenX[i] = (RAD_90-atan(vertices[i].y, vertices[i].x))/(FOV/2);
 		
 		ceilingY[i] = (RAD_90-atan(vertices[i].y,20))/(FOV/2);
