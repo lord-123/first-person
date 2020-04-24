@@ -10,28 +10,28 @@ const float RAD_90 = radians(90);
 
 uniform float FOV = RAD_90;
 
+float[2] screenX;
+float[2] ceilingY;
+float[2] floorY;
+
+float[2] heights;
+float[2] distances;
+
 void main() 
 {
-	float[2] screenX;
-	float[2] ceilingY;
-	float[2] floorY;
-
-	float[2] heights;
-	float[2] distances;
-
 	const float FOV_ALT = RAD_90-FOV/2;
 	const float FOV_ALT_TAN = tan(FOV_ALT);
 
 	vec4[2] vertices = vec4[2](gl_in[0].gl_Position, gl_in[1].gl_Position);
 
+	// ignore wall if completely out of the camera's FOV
 	if(vertices[0].y < 0 && vertices[1].y < 0) return;
-	
 	if(vertices[0].y < vertices[0].x * FOV_ALT_TAN && vertices[1].y < vertices[1].x * FOV_ALT_TAN) return;
 	if(vertices[0].y < -vertices[0].x * FOV_ALT_TAN && vertices[1].y < -vertices[1].x * FOV_ALT_TAN) return;
 
 	float m = (vertices[1].y-vertices[0].y)/(vertices[1].x-vertices[0].x);
 
-	float len = sqrt(pow(vertices[0].x-vertices[1].x,2)+pow(vertices[0].y-vertices[1].y,2));
+	float len = length(vertices[0]-vertices[1]);
 
 	for(int i = 0; i < 2; i++)
 	{
@@ -78,11 +78,11 @@ void main()
 
 	distanceScalar = distances[1];
 	gl_Position = vec4(screenX[1], floorY[1], -1/distances[1]+1, 1.0);
-	texCoords = vec3(heights[1], 0.0, heights[1]);
+	texCoords = vec3(heights[1] * len / 200, 0.0, heights[1]);
 	EmitVertex();
 
 	gl_Position = vec4(screenX[1], ceilingY[1], -1/distances[1]+1, 1.0);
-	texCoords = vec3(heights[1], heights[1], heights[1]);
+	texCoords = vec3(heights[1] * len / 200, heights[1], heights[1]);
 	EmitVertex();
 
 	EndPrimitive();

@@ -25,7 +25,7 @@ WallArray walls;
 Player player;
 
 void loadData();
-void renderingThread(sf::Window*);
+void renderingThread(sf::RenderWindow*);
 void handleInput();
 
 int main(int argc, char* argv[])
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	settings.antialiasingLevel = 8;
 	settings.depthBits = 24;
 
-	sf::Window window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
+	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "3D engine", sf::Style::Close | sf::Style::Resize, settings);
 	window.setActive(false);
 
 	sf::Thread renderer(&renderingThread, &window);
@@ -127,7 +127,7 @@ void loadData()
 	input.close();
 }
 
-void renderingThread(sf::Window* window)
+void renderingThread(sf::RenderWindow* window)
 {
 	window->setActive(true);
 
@@ -176,20 +176,23 @@ void renderingThread(sf::Window* window)
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		/*
-		if (debug)
-		{
-			fpsText.setString("fps: " + std::to_string(fps.getFPS()) + "\n"
-							+ "x: " + std::to_string(player.getPos().x) + "\n"
-							+ "y: " + std::to_string(player.getPos().y) + "\n"
-							+ "facing: " + std::to_string(player.getFacing()) + " (" + std::to_string(player.getFacing() * 180.0 / M_PI) + ")");
-			window->draw(fpsText);
-		}*/
-
 		shader.setUniform("playerPos", player.getPos());
 		shader.setUniform("playerFacing", player.getFacing());
 
 		walls.draw();
+
+		if (debug)
+		{
+			window->pushGLStates();
+			fpsText.setString("fps: " + std::to_string(fps.getFPS()) + "\n"
+				+ "x: " + std::to_string(player.getPos().x) + "\n"
+				+ "y: " + std::to_string(player.getPos().y) + "\n"
+				+ "facing: " + std::to_string(player.getFacing()) + " (" + std::to_string(player.getFacing() * 180.0 / M_PI) + ")");
+			window->draw(fpsText);
+			window->popGLStates();
+
+			sf::Shader::bind(&shader);
+		}
 
 		window->display();
 	}
